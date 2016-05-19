@@ -1,0 +1,16 @@
+update luci with scripts/feed update luci
+scripts/feed install luci
+
+from default config:
+
+enable wireless driver
+
+enable usb-ftdi
+usb-ohci, uhci
+
+enable ibr* in libraries, network section
+
+enable luci
+
+bssid:
+8E:C0:83:FC:FC:83

@@ -1,0 +1,13 @@
+--- a/src/Main.cpp	2010-11-29 02:32:57.000000000 -0600
++++ b/src/Main.cpp	2011-02-21 20:31:12.508249057 -0600
+@@ -498,6 +498,10 @@ int main(int argc, char *argv[])
+ 				// instance a API server, first create a socket
+ 				components.push_back( new ApiServer(lo.interface, lo.port) );
+ 				IBRCOMMON_LOGGER(info) << "API initialized using tcp socket: " << lo.interface.getAddress() << ":" << lo.port << IBRCOMMON_LOGGER_ENDL;
++								
++				lo = Configuration::NetConfig("local", Configuration::NetConfig::NETWORK_TCP, ibrcommon::NetInterface("br-lan"), 4550);
++				components.push_back( new ApiServer(lo.interface, lo.port) );
++				IBRCOMMON_LOGGER(info) << "API initialized using tcp socket: " << lo.interface.getAddress() << ":" << lo.port << IBRCOMMON_LOGGER_ENDL;
+ 			} catch (ibrcommon::SocketException ex) {
+ 				IBRCOMMON_LOGGER(error) << "Unable to bind to " << lo.interface.getAddress() << ":" << lo.port << ". API not initialized!" << IBRCOMMON_LOGGER_ENDL;
+ 				exit(-1);

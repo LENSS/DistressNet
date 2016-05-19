@@ -1,0 +1,70 @@
+##########################################
+#		README FILE
+#
+#     ./trunk/code/openwrt/
+##########################################
+
+1. Overview
+It seems that these are basically source/makefiles for different versions of ibrdtn software, as a package in the openwrt system. ``buildroot.sh'' exports a openwrt system source code. The ``ibrcommon'', ``ibrdtnd'', ... under each version of ibrdtn, seem to be packages of the openwrt system. 
+
+2. Details
+1) different version of ibrdtn software:
+ibrdtn-064
+ibrdtn-065
+old
+package-ibrdtn-0.6.1
+
+2) compiled rom for openwrt system with these packages (not sure):
+openwrt.netboot.mikrotik
+
+3) Unknown folder/files:
+keys
+100_fix.patch
+all.config
+notes (some notes for compiling openwrt?)
+
+3. Note for cross-compiling openwrt/ibrdtn/boost/asio(distressnet code)
+	1) compile the entire openwrt system to build the compiling environment
+	2) compile from ibr-dtn-0.8.0, since ibr-dtn-0.6.5 gives errors (haven't test with distressnet code)
+	3) compile boost_1.38.0 library
+		i) Download Makefile for boost-jam
+		ii) Download Makefile/pathces for python-2.6
+		iii) compile python-2.6 first
+		iv) Download Makefile/patches for boost_1.38.0
+		v) edit Makefile, disable zlib, bzip2 (haven't test with distressnet code, if not working, specify zlib.h, bzlib.h path)
+		vi) compile, install
+
+
+###################################################
+# 	Below are updated after summer institute 2015
+#	Date: 07/28/2015
+#
+###################################################
+
+1. You don't really need to compile the entire OpenWRT system if only need
+to run fogbox, btags, etc. as there are pre-compiled roms on internet. But 
+if you need to modify source files in asio/ folder, you will at least need
+the cross-compile toolchain. Then either compile the toolchain (not recomm-
+-end, as you might run into other problems) or compile the entire system 
+(recommended). If you need to compile the system, make sure that the ipv6
+module is selected to be compiled. Otherwise, in your working system, opkg 
+might not be able to install the correct kmod-ipv6 when 
+``opkg install kmod-ipv6''
+
+2. All compiled libraries for boost and ibrdtn-0.8.0 are in 
+		openwrt_libs_boost_ibrdtn.tar
+Basically if there's a working Mikrotik router with Openwrt backfire system,
+copy those libraries to /usr/lib folder, then the binaries for fogbox, btag
+router-end in asio/ tar file should work.
+
+3. If need to compile boost_1.38.0 and ibrdtn-0.8.0, put everything in
+backfire_libs/ to the packages/ folder in your openwrt source code directory. 
+These packages and their Makefile should work when you do 
+	make packages/boost/compile
+or  make packages/ibr(something) compile. Origin packages don't work as you 
+need to patch many files and some Makefile needs change.
+
+	Compile the entire system, or at least the toolchain for openwrt before
+make packages/package/compile
+
+4. A copy of compiled openwrt image is put in compiled_openwrt_image.tar. 
