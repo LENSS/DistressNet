@@ -1,0 +1,156 @@
+#################################
+#		IMPORTANT STUFF			#
+#								#
+#								#
+#################################
+decide on a struct for iphone to send location
+solder clips to wires
+provision routers
+init.d scripts for motegw etc etc
+RENAME ROUTERS TO STORAGENODE*.DTN
+
+###################################
+###################################
+
+
+TTD:
+----
+
+software:
+---------
+http proxy - probably post demo
+bodyt2 integration
+
+
+hardware:
+---------
+@@@ jacks for router
+@@@ 12v batteries for router
+thumb drive testing
+
+logistics:
+----------
+data collection and logging
+finalizing graphs
+
+
+###################################
+###################################
+
+
+Network design:
+~~~~~~~~~~~~~~~
+
+1. DTN/IP gateway for 6lowpan (motegw):
+---------------------------------------
+Listens on fec0::64 7001 UDP
+	- takes BLIP packets and
+		* sends on DTN to dtn://router1.dtn/basestation
+			- from uri: dtn://<router>/motegw
+		* sends on DTN to dtn://storagenode*.dtn/storageclient
+			- from uri: dtn://<router>/motegw
+		* sends to multicast 225.0.11.5 port 7010 UDP
+
+Listens on 225.0.11.5 7002 UDP
+	- Listens for IP packets and 
+		* sends to fec0::nodeidhex on port 7002
+
+Sample application that will use this service:
+a. Building Tags (get and set by iphone)
+
+Device classes with this service:
+
+
+2. DTN gateway for IP devices (dtnipgw):
+----------------------------------------
+Listens on 225.0.11.5 7003
+	- takes IP packets sent from iphone and
+		* sends on DTN to dtn://router1.dtn/basestation
+			- from URI is dtn://<router>/dtnipgw
+
+Sample application that will use this service:
+a. iphone sending location to base station
+
+3. Cut Detection for iOS:
+-------------------------
+Runs on the ipods
+
+Listens on 225.0.11.6 7050 UDP
+	- takes IP packets and
+		* computes state
+		* updates neighbor table
+
+Sends to 225.0.11.6 7050 UDP
+	- sends IP packets with
+		* current state
+
+4. Building Tag programmer for iOS:
+-----------------------------------
+Runs on the ipods
+
+Listens on 225.0.11.5 port 7010 UDP
+	- takes IP packets and
+		* retrieves Building Tag info
+		* changes it if needed
+
+Sends Building Tag info to 225.0.11.5 7002 UDP
+	- sends IP packets with
+		* a struct containing Building Tag info
+		* destination nodes id (fec0::nodeidhex)
+
+5. Storage Client (storageclient):
+----------------------------------
+DTN app receives on as /storageclient
+Immd sends sends same bundle to dtn://router1.dtn/basestation
+
+6. Location sender:
+-------------------
+sends to dtnipgw (225.0.11.5 7003)
+
+
+###################################
+###################################
+
+Resource allocation
+
+1. Base Station Router
+----------------------
+router1
+apps: none, but laptop has an IP of 1.150 and runs basesta app
+flash drive: yes
+IPBasestation: no
+
+2. Mobile Router with zigbee gw
+-------------------------------
+router2 router3
+apps: motegw, dtnipgw
+flash drive: yes
+IPBasestation: yes
+
+3. Building Tag GW
+------------------
+router4 router5
+apps: motegw, dtnipgw (???)
+flash drive: yes
+IPBasestation: yes
+
+4. Delsar GW
+------------
+router6
+apps: motegw
+flash drive: yes
+IPBasestation: yes
+
+5. Storage nodes
+----------------
+router7 router8
+apps: storageclient
+flash drive: yes
+IPBasestation: no
+
+6. Mesh routers
+---------------
+router9 router10 router11 router12
+apps: none
+flash drive: yes
+IPBasestation: no

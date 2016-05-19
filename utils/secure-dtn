@@ -1,0 +1,10 @@
+Hello Harsha,
+
+the key for the BAB is just a plaintext key. Put any phase you like into a file and reference to it in the configuration. The keys for encryption and authentication (asymmetric) are stored in a folder also referenced in the configuration. To generate these keys you could use openssl, but the name has to be the hex encoded name of the node to which the key belongs. A good start could be the attached script. It creates public and private keys for the name defined in the first parameter.
+
+E.g.:
+# bash genkey.sh dtn://secure-node1
+
+Regards,
+Johannes Morgenroth 
+

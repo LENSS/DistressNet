@@ -1,0 +1,484 @@
+gpsd -nN /dev/ttyUSB0 &
+echo '?WATCH={"enable":true,"json":true,"nmea":true,"timing":true}' | nc localhost 2947
+
+astyle -tD *.cpp
+
+sudo apt-get install flex libz-dev ncurses-dev
+
+AM_PATH_CPPUNIT: install libcppunit-dev
+
+TURN OFF FIREWALL
+TURN OFF FIREWALL
+TURN OFF FIREWALL
+TURN OFF FIREWALL
+TURN OFF FIREWALL
+
+###########################################################################
+###########################################################################
+
+
+openwrt building
+
+^^^^^^^
+OBSOLETED, JUST DO ./scripts/feeds install -a and use the provided all.config
+^^^^^^^
+
+
+DONT DO THIS ALWAYS GET STABLE BUILDS FROM DOWNLOADS on OPENWRT.ORG
+before using all.config, install luci with 
+./scripts/feeds update
+./scripts/feeds install -a -p luci
+
+install radvd
+./scripts/feeds install radvd
+
+install ibrdtn stuff by copying from package-ibrdtn
+patch main.cpp in ibrdtnd (100_fix.patch)
+patch ipcalc.sh in package base-files/bin
+
+you can now copy all.config as .config
+try make menuconfig just to see if .config changes...it ideally shouldnt
+run make. results are in bin/ar71xx/*
+
+major packages added:
+~~~~~~~~~~~~~~~~~~~~~
+wireless:
+kmod-ath9k
+wpad-mini
+luci
+luci-olsrd and plugins feeds
+crda
+ibrdtn*
+
+mote stuff:
+~~~~~~~~~~~
+usb uhci ahci
+kmod-tun for ipdriver
+ipv6 support in kernel and ip6tables and ip6tunnel
+
+utilities:
+~~~~~~~~~~
+ip
+netcat
+ntpd feeds
+boost-system feeds
+tcpdump (install from feeds)
+
+thumb drive:
+~~~~~~~~~~~~
+kmod usb storage
+kmod-nls-cp437
+iso 8859 1
+mount -o rw,sync
+block-mount block-hotplug
+
+###########################################################################
+###########################################################################
+
+rdate server on ubuntu:
+
+install openbsd-inetd. in /etc/inetd.conf, put
+
+time stream tcp nowait root internal
+time dgram udp wait root internal
+
+openwrt should then be able to sync
+
+----------can install ntpd on openwrt now
+
+###########################################################################
+###########################################################################
+
+mac addr script
+
+/sbin/ifconfig | grep 'eth0' | tr -s ' ' | cut -d ' ' -f5
+
+###########################################################################
+###########################################################################
+
+please see ucigen.sh for uci setup script
+
+
+
+###########################################################################
+###########################################################################
+
+new ubuntu installation
+sudo apt-get install subversion kismet tinyos-2.1.1 vim wireshark aptitude build-essential libnl-dev gawk ncurses-dev libz-dev flex lighttpd openssh-server traceroute
+
+###########################################################################
+###########################################################################
+
+sysupgrade -n http://192.168.1.150/ar71xx/img
+
+###########################################################################
+###########################################################################
+
+main.cpp hack to listen on all (ibrdtnd):
+
+lo = Configuration::NetConfig("local", Configuration::NetConfig::NETWORK_TCP, ibrcommon::NetInterface("br-lan"), 4550);
+components.push_back( new ApiServer(lo.interface, lo.port) );
+IBRCOMMON_LOGGER(info) << "API initialized using tcp socket: " << lo.interface.getAddress() << ":" << lo.port << IBRCOMMON_LOGGER_ENDL;
+
+
+###########################################################################
+###########################################################################
+
+tinyos c sdk on openwrt
+~~~~~~~~~~~~~~~~~~~~~~~
+first, add the bin dir from openwrt buildroot to path
+export PATH=$PATH:/home/cjh/svnbox/BigStack/trunk/code/openwrt/backfire/staging_dir/toolchain-mips_r2_gcc-4.3.3+cs_uClibc-0.9.30.1/usr/bin/
+
+then, go to code/sdk_mips
+after copying the original from tosroot/sdk/c, i had to change the makefiles in blip/driver dir, to remove hardcoded path to sf/libmote.a (point it to ../../sf/libmote.a instead. double ../ is since makefile is in driver subdir of blip)
+
+make distclean
+then run ../configure --host=mips-openwrt-linux
+make 
+
+thats it.
+
+###########################################################################
+###########################################################################
+
+
+nat commands
+~~~~~~~~~~~~
+
+sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
+sudo iptables -A FORWARD -o eth0 -i eth1 -j ACCEPT
+sudo iptables -A FORWARD -j ACCEPT
+sudo iptables -A POSTROUTING -t nat -j MASQUERADE
+
+sudo ip route add 192.168.0.0/16 via 192.168.1.1
+
+lab firewall:
+iptables -A INPUT -s 192.168.50.1 -j DROP
+
+
+###########################################################################
+###########################################################################
+
+ipcalc changes
+~~~~~~~~~~~~~~
+
+mynetmask=ip2int("255.255.255.0")                    
+mynetwork=and(ipaddr,mynetmask)                      
+								
+start=or(mynetwork,and(ip2int(ARGV[3]),compl(mynetmask)))
+limit=mynetwork+1
+
+###########################################################################
+###########################################################################
+
+/etc/passwd after passwd is set on openwrt root (passwd is 'a')
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+use to have both telnet and scp
+root:$1$/w7OxGFa$z6y8QgDKK52xr7W3HpYCb/:0:0:root:/root:/bin/ash
+
+###########################################################################
+###########################################################################
+
+bjam link=static variant=release --with-system stage
+add toolset=darwin for mac
+
+
+export PATH=$PATH:/home/cjh/svnbox/BigStack/trunk/code/openwrt/backfire_10.03/staging_dir/toolchain-mips_r2_gcc-4.3.3+cs_uClibc-0.9.30.1/usr/bin/
+
+###########################################################################
+###########################################################################
+
+twitter account creds
+~~~~~~~~~~~~~~~~~~~~~
+
+
+ACCESS_KEY = '266263893-P9g5kdxLrpkazhrRHug2ks16XvypSr4LjXY7mYKe'
+ACCESS_SECRET = 'KWiGEqGldGUbLBNZ72zZavCSNZK0iXgF0f7gwA3Ms'
+CONSUMER_KEY = 'PYfkFFlcdqJEyiarhOtug'
+CONSUMER_SECRET = 'mM7WWBAbSXfqOlXrVqKjt3Gna7SrG7X8u0EAhEwi8'
+
+
+amazon s3 creds
+~~~~~~~~~~~~~~~
+AKIAJ3OOBU7QSHZUEMOQ
+P7DNndMJjvxQVO90mbIo9P4Nikx5wwkJF0A/AB9X
+
+###########################################################################
+###########################################################################
+OLSRD STUFF
+
+
+IpVersion 4
+AllowNoInt yes
+Pollrate 0.025
+TcRedundancy 2
+MprCoverage 3
+LinkQualityFishEye 1
+LinkQualityDijkstraLimit 0 9.0
+FIBMetric "flat"
+ClearScreen yes
+Willingness 3
+LinkQualityAging 0.1
+LinkQualityAlgorithm "etx_ff"
+MinTCVTime 500.0
+NatThreshold 0.75
+
+HelloInterval 5.0     
+HelloValidityTime 40.0
+TcInterval 2.0       
+TcValidityTime 256.0 
+MidInterval 18.0     
+MidValidityTime 324.0
+HnaInterval 18.0         
+HnaValidityTime 108.0
+
+
+
+###########################################################################
+###########################################################################
+
+cu -l /dev/ttyUSB0 --nostop -s 115200
+
+433uah routerboard:
+~~~~~~~~~~~~~~~~~~~
+first, re-compile openwrt by patching as follows:
+
+PATCH IT IN BUILD_DIR ALSO
+PATCH IT IN BUILD_DIR ALSO
+PATCH IT IN BUILD_DIR ALSO
+PATCH IT IN BUILD_DIR ALSO
+PATCH IT IN BUILD_DIR ALSO
+vi build_dir/linux-ar71xx/linux-2.6.32.10/drivers/mtd/nand/rb4xx_nand.c
+
+--- target/linux/ar71xx/files/drivers/mtd/nand/rb4xx_nand.c.orig        2009-10-07 11:08:46.000000000 -0700
++++ target/linux/ar71xx/files/drivers/mtd/nand/rb4xx_nand.c     2009-10-07 11:09:00.000000000 -0700
+@@ -92,7 +92,7 @@
+        {
+                .name   = "kernel",
+                .offset = (256 * 1024),
+-               .size   = (4 * 1024 * 1024) - (256 * 1024),
++               .size   = (8 * 1024 * 1024) - (256 * 1024),
+        },
+        {
+                .name   = "rootfs",
+
+create a ramdisk and elf files as usual. CAUTION: CHANGE IT IN MENUCONFIG!! RECOMPILE TWICE< ONCE WITH RAMDISK AND ANOTHER TIME WITHOUT
+boot via serial console. erase flash. 
+boot via ramdisk image to get a prompt. use wget2nand utility. all as in:
+
+http://wiki.openwrt.org/toh/mikrotik/rb433
+
+
+dnsmasq settings: paste at bottom
+
+dhcp-range=192.168.1.1,192.168.1.10,1m
+dhcp-host=*:*:*:*:*:*,192.168.1.1
+dhcp-boot=openwrt.netboot
+enable-tftp
+tftp-root=/tmp
+interface=eth1
+
+sudo rm /var/lib/misc/dnsmasq.leases
+
+
+
+cp bin/ar71xx/openwrt-ar71xx-nand-vmlinux-initramfs.elf /tmp/openwrt.netboot
+
+cp bin/ar71xx/openwrt-ar71xx-nand-vmlinux.elf /var/www/
+cp bin/ar71xx/openwrt-ar71xx-nand-rootfs.tar.gz /var/www/
+
+wget2nand http://192.168.1.100
+
+cp bin/ar71xx/openwrt-ar71xx-generic-vmlinux-initramfs.elf /tmp/openwrt.netboot
+cp bin/ar71xx/openwrt-ar71xx-generic-vmlinux.elf /var/www/
+cp bin/ar71xx/openwrt-ar71xx-generic-rootfs.tar.gz /var/www/
+
+src/gz ibrlocal http://192.168.1.150/packages
+
+###########################################################################
+###########################################################################
+
+80211 powersave stuff
+
+first, see http://wireless.kernel.org/80211books/powersave.html
+
+to see if the driver supports powersave, grep for IEEE80211_HW_SUPPORTS_PS or IEEE80211_HW_SUPPORTS_DYNAMIC_PS .
+
+Now, even though driver has it, it needs to be controlled via 'iw' utility, which uses nl80211 interface. 
+ONLY kernel versions 2.6.34 and up implement changing power via iw. This can be seen in linux source (net/wireless/nl80211.c).
+So, use a kernel higher than 2.6.34 and use the latest iw utility to set power management. 
+
+
+###########################################################################
+###########################################################################
+
+custom kernel compilation for openwrt
+
+change version in target/linux/ar71xx/makefile
+now create a config-2.6.39 in the same directory
+also create the same thing in target/linux/generic-2.6
+usual stuff after that
+
+
+dtn::data::PayloadBlock p = bundle.getBlock<dtn::data::PayloadBlock>();	
+stringstream ss;
+ss << p.getBLOB().iostream()->rdbuf();
+return className + ": Bundle received " + bundle.toString() + " with data: " + ss.str();
+
+
+###########################################################################
+###########################################################################
+
+notes on using backfire trunk:
+
+has latest 2.6.39.2 kernel
+has support for nand flash in menuconfig
+
+ath9k does not work for some reason WRONG switch and IP config is wrong
+madwifi is the default choice for wireless
+
+do not use, ath9k broken.
+cant use 39.3 kernel in 10.03 either
+
+get r24486 from repo...has 2.6.36.2 
+
+
+psm on sta:
+
+DISABLE WMM on windows client
+
+psm on AP: ath9k latest trunk works ok even with mistrel. debugfs works nice. can see sta capabilities in phy0/netdev/stations etc
+use latest compat-wireless (mac80211 package) and iw packages with backfire...will work.
+
+###########################################################################
+###########################################################################
+
+wireless.@wifi-iface[0].mode=ap
+uci set wireless.@wifi-iface[0].encryption=psk+tkip+ccmp
+uci set wireless.@wifi-iface[0].key="abbcccdddd"
+uci set wireless.radio0.channel=6
+uci set wireless.radio0.disabled=0
+
+###########################################################################
+###########################################################################
+
+security bypass for routing bundles: add to ibrdtnd/security/securitymanager in verify and fastverify
+
+
+			// pass if routing
+			size_t found = bundle.toString().find("routing");
+			if (found != string::npos)
+			{
+				IBRCOMMON_LOGGER(notice) << "verify: string is  " << bundle.toString() << IBRCOMMON_LOGGER_ENDL;
+				IBRCOMMON_LOGGER(notice) << "skippin...found is " << found << IBRCOMMON_LOGGER_ENDL;
+				return;
+			}
+
+
+csv log format: time, neighs, recvd, sent, stored
+
+run gpsd -nN /dev/ttyUSB0
+
+GPSD MODIFY THE DAMN SOURCE FOR HIGHER PRECISION LATLONG
+line 645 in driver_sirf.c
+
+                "SiRF: MND 0x02: time=%.9f lat=%.9f lon=%.9f alt=%.9f track=%.9f speed=%.9f mode=%d status=%d hdop=%.9f used=%d mask=%s\n",
+
+
+
+-----graveyard
+
+
+
+
+
+
+
+
+
+src/gz mypackages http://192.168.1.150/packages
+src/gz packages http://downloads.openwrt.org/backfire/10.03.1-rc5/ar71xx/packages
+dest root /
+dest ram /tmp
+lists_dir ext /var/opkg-lists
+option overlay_root /overlay
+
+
+
+to make ctel work, del ~/.csshrc 
+
+###########################################################################
+###########################################################################
+
+blip v2 BS:
+
+get blip2 from tinyos-main or branches/blip-rpl-devel
+change tinyos repository to  deb http://sing.stanford.edu/tinyos/dists/ubuntu/ lucid main
+install latest mspgcc 4.5.3
+make a opt/tinyos-main/tinyos.sh file similar...so that env variables get set
+
+in support/make/telosb.extra, change -O to -Os
+should compile ppprouter with 47444 kb in rom
+
+now on the host, 
+
+pppd debug passive noauth nodetach 115200 /dev/ttyUSB0 nocrtscts nocdtrcts lcp-echo-interval 0 noccp noip ipv6 ::23,::24 &
+ifconfig ppp0 add fec0::100/64
+
+ADD NO ADDRESS RECOGNITION FOR PPPROUTER...AND SEND ALL MULTICAST DATA ON FEC0::100 INSTEAD. LINK LOCAL STUFF WILL NOT GET FORWARDED TO OTHER END OF THE PPP LINK.
+
+TWITTER CLIENT SET THE ENDIANNESS IN SHA1.h WTF WTF
+
+if you dont see multicast, esp on router 2 or more...
+route add -net 225.0.0.0 netmask 255.0.0.0 dev br-lan
+
+
+
+stty 115200 min 1 time 5 -icrnl -parenb cs8 < /dev/ttyUSB1 && cat /dev/ttyUSB1
+
+broadcast fragmentation: in ipdispatchP, packet is marked as not sent if not acknowledged. since broadcast isnt acked, it is impossible to send blip2 packets above 100 bytes on broadcast, and even unicast somehow.
+
+
+java net.tinyos.tools.PrintfClient -comm serial@/dev/ttyUSB1:telosb
+
+
+OLSRD MODS txtinfo and dotdraw
+
+olsrd.@olsrd[0]=olsrd
+olsrd.@olsrd[0].IpVersion=4
+olsrd.@LoadPlugin[0]=LoadPlugin
+olsrd.@LoadPlugin[0].library=olsrd_arprefresh.so.0.1
+olsrd.@LoadPlugin[1]=LoadPlugin
+olsrd.@LoadPlugin[1].library=olsrd_dyn_gw.so.0.5
+olsrd.@LoadPlugin[2]=LoadPlugin
+olsrd.@LoadPlugin[2].library=olsrd_httpinfo.so.0.1
+olsrd.@LoadPlugin[2].port=1978
+olsrd.@LoadPlugin[2].Net=0.0.0.0 0.0.0.0
+olsrd.@LoadPlugin[3]=LoadPlugin
+olsrd.@LoadPlugin[3].library=olsrd_nameservice.so.0.3
+olsrd.@LoadPlugin[4]=LoadPlugin
+olsrd.@LoadPlugin[4].library=olsrd_txtinfo.so.0.1
+olsrd.@LoadPlugin[4].port=1979
+olsrd.@LoadPlugin[4].Net=0.0.0.0 0.0.0.0
+olsrd.@LoadPlugin[4].accept=0.0.0.0
+olsrd.@LoadPlugin[5]=LoadPlugin
+olsrd.@LoadPlugin[5].library=olsrd_dot_draw.so.0.3
+olsrd.@LoadPlugin[5].port=1980
+olsrd.@LoadPlugin[5].accept=0.0.0.0
+
+echo "/all" | nc localhost 1979
+telnet localhost 1980
+
+
+
+
+
+config switch
+	        option name     'eth1'
+	        option reset    '1'
+	        option enable_vlan '1'
+	
+	config switch_vlan
+	        option device   'eth1'
+	        option vlan     '1'
+	        option ports    '1 2 5'
