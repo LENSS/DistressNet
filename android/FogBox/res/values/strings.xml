@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FogBox</string>
+     <string name="file_list">FogBox FileList</string>
+      <string name="Exiting">Exiting Application...</string>
+        <string name="IncorrectLogin">Incorrect Username or Password</string>
+        <string name="Ok">Ok</string>
+        <string name="Cancel">Cancel</string>
+        <string name="Share">Share</string>
+        <string name="Delete">Delete</string>
+        <string name="Sharing">File Sharing</string>
+        <string name="SelectGroups">Select the groups to be shared</string>
+         <string name="ConfirmFileShare">Are you sure you want to Share the file?</string>
+
+</resources>
