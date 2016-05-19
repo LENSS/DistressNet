@@ -69,9 +69,9 @@
 	using unicast. But since Epidemic is used as routing, each unicast is also flooded
 	to all routers, making it N^2 (N routers) transmissions for one file. Now since 
 	the other router that receive this file sees it as a new file (yes, no state 
-	monitoring in the original version), it sends the file to everyone again, making 
-	it to N^3 transmissions. Therefore if there're K files, N routers, there will be 
-	O(K*N^3) transmissions, in worst case. 
+	monitoring in the original version), it sends the file to everyone again. And therefore
+	whenever the original fogbox is running, the network is simply saturated. All other
+	applications only get limited throughput.  
 
 - Compiled binary for OpenWRT system is put in compiled_binary_openwrt_backfire_10.03.tar
 	with the source code (the exact version for the binary). If everything is setup 
